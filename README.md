@@ -5,6 +5,9 @@ Exercises covered:
 ### Arrays and Strings
 
 - [ex1_1.c](./arrays_and_strings/ex1_1.c)
+- [ex1_2.c](./arrays_and_strings/ex1_2.c)
+- [ex1_3.c](./arrays_and_strings/ex1_3.c)
+- [ex1_4.c](./arrays_and_strings/ex1_4.c)
 
 ## License
 

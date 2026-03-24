@@ -136,3 +136,4 @@ end
 build_project("arrays_and_strings", "ex1_1")
 build_project("arrays_and_strings", "ex1_2")
 build_project("arrays_and_strings", "ex1_3")
+build_project("arrays_and_strings", "ex1_4")
