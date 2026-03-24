@@ -4,7 +4,7 @@ Exercises covered:
 
 ### Arrays and Strings
 
-- [ex1_1.c](./chapter_1/ex1_1.c)
+- [ex1_1.c](./arrays_and_strings/ex1_1.c)
 
 ## License
 
