@@ -134,3 +134,4 @@ end
 
 -------------- CHAPTER 1 --------------
 build_project("arrays_and_strings", "ex1_1")
+build_project("arrays_and_strings", "ex1_2")
