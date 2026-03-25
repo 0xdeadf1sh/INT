@@ -9,6 +9,10 @@ Exercises covered:
 - [ex1_3.c](./arrays_and_strings/ex1_3.c)
 - [ex1_4.c](./arrays_and_strings/ex1_4.c)
 - [ex1_5.c](./arrays_and_strings/ex1_5.c)
+- [ex1_6.c](./arrays_and_strings/ex1_6.c)
+- [ex1_7.c](./arrays_and_strings/ex1_7.c)
+- [ex1_8.c](./arrays_and_strings/ex1_8.c)
+- [ex1_9.c](./arrays_and_strings/ex1_9.c)
 
 ## License
 
