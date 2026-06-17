@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <ctype.h>
 
 static bool has_sufficient_space(const char* s)
 {
@@ -6,21 +7,28 @@ static bool has_sufficient_space(const char* s)
         return false;
     }
 
-    int spaces  = 0;
-    int total   = 0;
-    int len     = 0;
+    int spaces      = 0;
+    int urlified    = 0;
+    int len         = 0;
 
     for (; s[len]; ++len) {
         if (s[len] == ' ') {
             ++spaces;
         }
         else {
-            total += 1 + spaces * 3;
+            urlified += 1 + spaces * 3;
             spaces = 0;
         }
     }
 
-    return total && total <= len;
+    return urlified && urlified <= len;
+}
+
+static void shift_right(char* s, int k, int len)
+{
+    for (int i = len - 1, j = i - k; j >= 0; --i, --j) {
+        s[i] = s[j];
+    }
 }
 
 static void urlify(char* s)
@@ -30,34 +38,34 @@ static void urlify(char* s)
     }
 
     int len = 0;
-    for (; s[len]; ++len)
-        ;
+    int trailing_blank_cnt = 0;
 
-    int last_nonspace_ind = len - 1;
-    for (int i = len - 1; i >= 0; --i) {
-        if (s[i] != ' ') {
-            last_nonspace_ind = i;
-            break;
-        }
-    }
-
-    int write_ind = len;
-    for (int read_ind = last_nonspace_ind; read_ind >= 0; --read_ind) {
-        if (s[read_ind] == ' ') {
-            s[--write_ind] = '%';
-            s[--write_ind] = '0';
-            s[--write_ind] = '2';
+    for (; s[len]; ++len) {
+        if (isspace(s[len])) {
+            ++trailing_blank_cnt;
         }
         else {
-            s[--write_ind] = s[read_ind];
+            trailing_blank_cnt = 0;
         }
     }
 
-    for (int i = 0; i < len - write_ind; ++i) {
-        s[i] = s[i + write_ind];
+    shift_right(s, trailing_blank_cnt, len);
+
+    int read_ind = trailing_blank_cnt;
+    int write_ind = 0;
+
+    for (; read_ind < len; ++read_ind) {
+        if (isspace(s[read_ind])) {
+            s[write_ind++] = '%';
+            s[write_ind++] = '2';
+            s[write_ind++] = '0';
+        }
+        else {
+            s[write_ind++] = s[read_ind];
+        }
     }
 
-    s[len - write_ind] = '\0';
+    s[write_ind] = '\0';
 }
 
 int main(int argc, char** argv)

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #define ABS(X) ((X) < 0 ? -(X) : (X))
 
@@ -9,29 +10,26 @@ static bool is_one_away(const char* p,
         return false;
     }
 
-    int p_len = 0;
-    for (; p[p_len]; ++p_len)
-        ;
-
-    int q_len = 0;
-    for (; q[q_len]; ++q_len)
-        ;
+    int p_len = (int)strlen(p);
+    int q_len = (int)strlen(q);
 
     if (ABS(p_len - q_len) > 1) {
         return false;
     }
 
     const char* shorter = (p_len < q_len) ? p : q;
-    const char* longer  = (shorter == q)  ? p : q;
+    const char* longer  = (shorter == p)  ? q : p;
 
     int diff = 0;
 
     while (*shorter && *longer) {
 
-        if (*shorter != *longer) {
-
+        if (*shorter == *longer) {
+            ++shorter;
+            ++longer;
+        }
+        else {
             ++diff;
-
             if (diff > 1) {
                 return false;
             }
@@ -44,14 +42,6 @@ static bool is_one_away(const char* p,
                 ++longer;
             }
         }
-        else {
-            ++shorter;
-            ++longer;
-        }
-    }
-
-    for (; *longer; ++longer) {
-        ++diff;
     }
 
     return diff <= 1;

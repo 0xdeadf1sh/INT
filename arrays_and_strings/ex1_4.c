@@ -12,11 +12,8 @@ static bool is_palindrome_of_permutation(const char* s)
     bool state[EXT_ASCII_LEN] = {};
 
     for (; *s; ++s) {
-
         if (isalnum(*s)) {
-
             int c = tolower(*s);
-
             state[c] = !state[c];
         }
     }

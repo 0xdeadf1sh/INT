@@ -13,9 +13,7 @@ static bool is_unique(const char* s)
     for (; *s; ++s) {
 
         if (bits[(int)*s]) {
-
             return false;
-
         }
 
         bits[(int)*s] = true;

@@ -1,19 +1,16 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 static int count_digits(int n)
 {
-    int cnt = 0;
-
-    do {
-        ++cnt;
+    int k = n / 10;
+    if (k) {
+        return 1 + count_digits(k);
     }
-    while (n /= 10);
 
-    return cnt;
+    return 1;
 }
 
-static bool can_be_compressed(const char* s, int* new_len)
+static bool can_be_compressed(const char* s)
 {
     if (!s) {
         return false;
@@ -23,33 +20,39 @@ static bool can_be_compressed(const char* s, int* new_len)
     for (; s[s_len]; ++s_len)
         ;
 
-    int last_letter     = s[0];
+    int last_letter     = *s;
     int last_letter_cnt = 0;
     int compressed_len  = 0;
 
-    for (int read_ind = 0; s[read_ind]; ++read_ind) {
-        if (s[read_ind] == last_letter) {
+    for (; *s; ++s) {
+        if (*s == last_letter) {
             ++last_letter_cnt;
         }
         else {
-            compressed_len += 1 + count_digits(last_letter_cnt);
-            last_letter = s[read_ind];
+            ++compressed_len;
+            if (last_letter_cnt > 1) {
+                compressed_len += count_digits(last_letter_cnt);
+            }
             last_letter_cnt = 1;
+            last_letter = *s;
         }
     }
 
     if (last_letter_cnt) {
-        compressed_len += 1 + count_digits(last_letter_cnt);
+        ++compressed_len;
+        if (last_letter_cnt > 1) {
+            compressed_len += count_digits(last_letter_cnt);
+        }
     }
 
-    *new_len = compressed_len;
     return compressed_len < s_len;
 }
 
 static int write_digits(char* buffer, int write_index, int k)
 {
-    if (k / 10) {
-        write_index = write_digits(buffer, write_index, k / 10);
+    int m = k / 10;
+    if (m) {
+        write_index = write_digits(buffer, write_index, m);
     }
 
     buffer[write_index++] = (char)(k % 10 + '0');
@@ -57,25 +60,15 @@ static int write_digits(char* buffer, int write_index, int k)
     return write_index;
 }
 
-static char* compress(char* s)
+static void compress(char* s)
 {
     if (!s) {
-        return s;
-    }
-
-    int compressed_len = 0;
-    if (!can_be_compressed(s, &compressed_len)) {
-        return s;
-    }
-
-    char* buffer = malloc((size_t)compressed_len + 1);
-    if (!buffer) {
-        return s;
+        return;
     }
 
     int read_ind        = 0;
     int write_ind       = 0;
-    int last_letter     = s[0];
+    int last_letter     = *s;
     int last_letter_cnt = 0;
 
     for (; s[read_ind]; ++read_ind) {
@@ -83,21 +76,23 @@ static char* compress(char* s)
             ++last_letter_cnt;
         }
         else {
-            buffer[write_ind++] = (char)last_letter;
-            write_ind = write_digits(buffer, write_ind, last_letter_cnt);
+            s[write_ind++] = (char)last_letter;
+            if (last_letter_cnt > 1) {
+                write_ind = write_digits(s, write_ind, last_letter_cnt);
+            }
             last_letter = s[read_ind];
             last_letter_cnt = 1;
         }
     }
 
     if (last_letter_cnt) {
-        buffer[write_ind++] = (char)last_letter;
-        write_ind = write_digits(buffer, write_ind, last_letter_cnt);
+        s[write_ind++] = (char)last_letter;
+        if (last_letter_cnt > 1) {
+            write_ind = write_digits(s, write_ind, last_letter_cnt);
+        }
     }
 
-    buffer[write_ind] = '\0';
-
-    return buffer;
+    s[write_ind] = '\0';
 }
 
 int main(int argc, char** argv)
@@ -107,12 +102,13 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    char* buffer = compress(argv[1]);
-    printf("'%s'\n", buffer);
-
-    if (buffer != argv[1]) {
-        free(buffer);
+    if (!can_be_compressed(argv[1])) {
+        printf("'%s'\n", argv[1]);
+        return 0;
     }
+
+    compress(argv[1]);
+    printf("'%s'\n", argv[1]);
 
     return 0;
 }
